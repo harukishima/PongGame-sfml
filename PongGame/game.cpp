@@ -30,6 +30,8 @@ void Game::run()
 	}
 }
 
+
+
 void Game::processEvents()
 {
 	sf::Event ev;
@@ -74,7 +76,7 @@ void Game::checkWallCollision()
 	{
 		NewBall.setDirection(NewBall.getDirection().x, -NewBall.getDirection().y);
 	}
-	if ((NewBall.getPosition().y + NewBall.getRadius()) >= (wWidth - lowerWall.getSize().y))
+	if ((NewBall.getPosition().y + NewBall.getRadius()) >= (wHeight - lowerWall.getSize().y))
 	{
 		NewBall.setDirection(NewBall.getDirection().x, -NewBall.getDirection().y);
 	}

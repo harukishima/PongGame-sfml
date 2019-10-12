@@ -4,6 +4,7 @@
 
 #include<SFML/Graphics.hpp>
 
+
 const sf::Time TimePerFrame = sf::seconds(1.f / 144.f);
 const unsigned int wWidth = 800;
 const unsigned int wHeight = 600;
@@ -21,8 +22,10 @@ public:
 
 	void setSpeed(float);
 	void setDirection(float,float);
+	void setDirection(const sf::Vector2f&);
 	float getSpeed();
 	sf::Vector2f getDirection();
+	static sf::Vector2f normalizeVector(const sf::Vector2f&);
 };
 
 
