@@ -3,29 +3,20 @@
 
 
 #include<SFML/Graphics.hpp>
+#include"MoveableObject.h"
 
 
-const sf::Time TimePerFrame = sf::seconds(1.f / 144.f);
-const unsigned int wWidth = 800;
-const unsigned int wHeight = 600;
+
 const float dBallSpeed = 50;
 
-class Ball : public sf::CircleShape
+class Ball : public sf::CircleShape, public MoveableObject
 {
-protected:
-	float mSpeed;
-	sf::Vector2f mDirection;
 public:
 	Ball();
 	Ball(float, float, float, float);
 	virtual ~Ball();
 
-	void setSpeed(float);
-	void setDirection(float,float);
-	void setDirection(const sf::Vector2f&);
-	float getSpeed();
-	sf::Vector2f getDirection();
-	static sf::Vector2f normalizeVector(const sf::Vector2f&);
+	
 };
 
 

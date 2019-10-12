@@ -3,7 +3,7 @@
 
 #include<SFML/Graphics.hpp>
 #include"ball.h"
-
+#include"Paddle.h"
 
 
 class Game
@@ -17,12 +17,19 @@ private:
 	void update(sf::Time);
 	void render();
 	void defaultWall();
+
 	void checkWallCollision();
 
 	sf::RenderWindow mWindow;
 	Ball NewBall;
 	sf::RectangleShape upperWall;
 	sf::RectangleShape lowerWall;
+	Paddle leftPaddle;
+	Paddle rightPaddle;
+
+	bool isPlaying = false;
+	bool isSingle = false;
+	bool isMulti = false;
 };
 
 
