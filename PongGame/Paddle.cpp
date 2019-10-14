@@ -11,3 +11,23 @@ void Paddle::defaultPaddle()
 	mDirection = sf::Vector2f(0, 0);
 	setOrigin(sf::Vector2f(0, getSize().y / 2));
 }
+
+void Paddle::setUpState(bool state)
+{
+	isUp = state;
+}
+
+void Paddle::setDownState(bool state)
+{
+	isDown = state;
+}
+
+bool Paddle::getUpState()
+{
+	return isUp;
+}
+
+bool Paddle::getDownState()
+{
+	return isDown;
+}

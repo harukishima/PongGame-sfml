@@ -2,9 +2,9 @@
 
 Ball::Ball()
 {
-	mSpeed = 1;
-	mDirection.x = 1;
-	mDirection.y = -10;
+	mSpeed = 3;
+	mDirection.x = sqrt(2)/2;
+	mDirection.y = sqrt(2)/2;
 	mDirection = normalizeVector(mDirection);
 	setRadius(10);
 	setOrigin(getRadius(), getRadius());

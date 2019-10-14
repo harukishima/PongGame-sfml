@@ -6,10 +6,19 @@
 
 class Paddle : public sf::RectangleShape, public MoveableObject
 {
+private:
+	bool isUp = false;
+	bool isDown = false;
 public:
 	Paddle();
 	virtual ~Paddle() = default;
+
 	void defaultPaddle();
+	void setUpState(bool state);
+	void setDownState(bool state);
+	bool getUpState();
+	bool getDownState();
+
 };
 
 

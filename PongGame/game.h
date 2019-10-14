@@ -2,6 +2,7 @@
 #define __GAME_H__
 
 #include<SFML/Graphics.hpp>
+#include<ctime>
 #include"ball.h"
 #include"Paddle.h"
 
@@ -14,11 +15,17 @@ public:
 	
 private:
 	void processEvents();
+	void handleInput(sf::Keyboard::Key key, bool isPressed);
 	void update(sf::Time);
 	void render();
 	void defaultWall();
+	void defaultPaddleState();
+	void defaultBallState();
 
 	void checkWallCollision();
+	void checkPaddleCollision();
+	void updateBall();
+	void updatePaddle();
 
 	sf::RenderWindow mWindow;
 	Ball NewBall;
