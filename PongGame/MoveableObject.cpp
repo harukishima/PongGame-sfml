@@ -37,3 +37,8 @@ sf::Vector2f MoveableObject::normalizeVector(const sf::Vector2f& v)
 	float vLength = sqrt(pow(v.x, 2) + pow(v.y, 2));
 	return sf::Vector2f(v.x / vLength, v.y / vLength);
 }
+
+double MoveableObject::vectorLength(const sf::Vector2f& a)
+{
+	return sqrt(pow(a.x,2)+pow(a.y,2));
+}

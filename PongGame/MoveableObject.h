@@ -21,6 +21,7 @@ public:
 	float getSpeed();
 	sf::Vector2f getDirection();
 	static sf::Vector2f normalizeVector(const sf::Vector2f&);
+	static double vectorLength(const sf::Vector2f&);
 
 };
 
