@@ -122,8 +122,15 @@ void Game::defaultBallState()
 	NewBall.setSpeed(2);
 	NewBall.setPosition(sf::Vector2f(wWidth/2.f, wHeight/2.f));
 	srand((int)time(0));
-	sf::Vector2f direction(rand(), rand());
+	float angle;
+	do {
+		angle = rand() % 360 + 1;
+	} while ((angle > 45 && angle < 135) || (angle > 225 && angle < 315));
+	float x = cos(angle*(3.1415 / 180)) * NewBall.getPosition().x - sin(angle * (3.1415 / 180)) * NewBall.getPosition().y;
+	float y = sin(angle*(3.1415 / 180)) * NewBall.getPosition().x + cos(angle * (3.1415 / 180)) * NewBall.getPosition().y;
+	sf::Vector2f direction(x, y);
 	direction = MoveableObject::normalizeVector(direction);
+	NewBall.setDirection(direction);
 }
 
 void Game::checkWallCollision()
