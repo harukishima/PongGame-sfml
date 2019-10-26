@@ -9,8 +9,8 @@ Game::Game()
 	leftPaddle.defaultPaddle(); rightPaddle.defaultPaddle();
 	defaultPaddleState();
 	defaultBallState();
-	isPlaying = true;
-	isSingle = true;
+	/*isPlaying = true;
+	isSingle = true;*/
 	font.loadFromFile("sansation.ttf");
 	Score1.setFont(font);
 	Score1.setString("0");
@@ -84,6 +84,71 @@ void Game::handleInput(sf::Keyboard::Key key, bool isPressed)
 	{
 		rightPaddle.setDownState(isPressed);
 	}
+	//Processed only when key is pressed
+	if (isPressed)
+	{
+		if (isMainMenu)
+		{
+			mainMenu.navigate(key);
+			//Exit game from main menu
+			if (key == sf::Keyboard::Escape)
+			{
+				mWindow.close();
+			}
+			//Start game in multiplayer mode
+			if (mainMenu.getRightState() && key == sf::Keyboard::Enter)
+			{
+				isMainMenu = false;
+				isSingle = false;
+				isPlaying = true;
+			}
+		}
+		
+		
+		//Pause game;
+		if (isPlaying && key == sf::Keyboard::Escape)
+		{
+			isPlaying = false;
+		}
+		//Pause menu input
+		if (!isPlaying && !isMainMenu)
+		{
+			/*if (pauseMenu.getState() != 3)
+			{
+				if (key == sf::Keyboard::Down)
+				{
+					pauseMenu.setState(pauseMenu.getState() + 1);
+				}
+			}
+			if (pauseMenu.getState() != 1)
+			{
+				if (key == sf::Keyboard::Up)
+				{
+					pauseMenu.setState(pauseMenu.getState() - 1);
+				}
+			}*/
+			pauseMenu.navigate(key);
+			if (key == sf::Keyboard::Enter)
+			{
+				switch (pauseMenu.getState())
+				{
+				case 1:
+					isPlaying = true;
+					break;
+				case 2:
+					isPlaying = false;
+					reset();
+					isMainMenu = true;
+					break;
+				case 3:
+					mWindow.close();
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
 }
 
 void Game::update(sf::Time TimePerFrame)
@@ -98,18 +163,48 @@ void Game::update(sf::Time TimePerFrame)
 		movement = rightPaddle.getDirection() * rightPaddle.getSpeed();
 		rightPaddle.move(movement);*/
 	}
+	else if (isMainMenu)
+	{
+		mainMenu.updateMenu();
+	}
+	else
+	{
+		pauseMenu.updateMenu();
+	}
+	
 }
 
 void Game::render()
 {
 	mWindow.clear();
-	mWindow.draw(leftPaddle);
-	mWindow.draw(rightPaddle);
-	mWindow.draw(NewBall);
-	mWindow.draw(upperWall);
-	mWindow.draw(lowerWall);
-	mWindow.draw(Score1);
-	mWindow.draw(Score2);
+	if (isPlaying)
+	{
+		mWindow.draw(leftPaddle);
+		mWindow.draw(rightPaddle);
+		mWindow.draw(NewBall);
+		mWindow.draw(upperWall);
+		mWindow.draw(lowerWall);
+		mWindow.draw(Score1);
+		mWindow.draw(Score2);
+	}
+	else if(isMainMenu)
+	{
+		mWindow.draw(mainMenu.title);
+		mWindow.draw(mainMenu.leftBox);
+		mWindow.draw(mainMenu.rightBox);
+		mWindow.draw(mainMenu.leftText);
+		mWindow.draw(mainMenu.rightText);
+	}
+	else
+	{
+		mWindow.draw(pauseMenu.title);
+		mWindow.draw(pauseMenu.upperBox);
+		mWindow.draw(pauseMenu.upperText);
+		mWindow.draw(pauseMenu.midleBox);
+		mWindow.draw(pauseMenu.midleText);
+		mWindow.draw(pauseMenu.bottomBox);
+		mWindow.draw(pauseMenu.bottomText);
+	}
 	mWindow.display();
 }
 
@@ -127,8 +222,9 @@ void Game::defaultWall()
 void Game::defaultPaddleState()
 {
 	leftPaddle.setPosition(sf::Vector2f(0.f,wHeight/2.f));
-	
+	leftPaddle.setScore(0);
 	rightPaddle.setPosition(sf::Vector2f(wWidth-rightPaddle.getSize().x,wHeight/2.f));
+	rightPaddle.setScore(0);
 }
 
 void Game::defaultBallState()
@@ -236,4 +332,10 @@ void Game::updateScore()
 {
 	Score1.setString(std::to_string(leftPaddle.getScore()));
 	Score2.setString(std::to_string(rightPaddle.getScore()));
+}
+
+void Game::reset()
+{
+	defaultBallState();
+	defaultPaddleState();
 }
