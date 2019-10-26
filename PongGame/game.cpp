@@ -11,15 +11,14 @@ Game::Game()
 	defaultBallState();
 	isPlaying = true;
 	isSingle = true;
-	sf::Font font;
 	font.loadFromFile("sansation.ttf");
 	Score1.setFont(font);
-	Score1.setString(std::to_string(score1));
+	Score1.setString("0");
 	Score1.setCharacterSize(20);
 	Score1.setPosition((mWindow.getSize().x) / 4, 20);
 	Score1.setFillColor(sf::Color::White);
 	Score2.setFont(font);
-	Score2.setString(std::to_string(score1));
+	Score2.setString("0");
 	Score2.setCharacterSize(20);
 	Score2.setPosition(3*(mWindow.getSize().x) / 4, 20);
 	Score2.setFillColor(sf::Color::White);
@@ -93,7 +92,7 @@ void Game::update(sf::Time TimePerFrame)
 	{
 		updateBall();
 		updatePaddle();
-		
+		updateScore();
 		/*
 		movement = sf::Vector2f(0, 0);
 		movement = rightPaddle.getDirection() * rightPaddle.getSpeed();
@@ -142,12 +141,15 @@ void Game::defaultBallState()
 	float angle;
 	float x, y;
 	sf::Vector2f direction;
-	angle = uniform_distance(gen);
-	x = cos(angle * (std::_Pi / 180)) * NewBall.getPosition().x - sin(angle * (std::_Pi / 180)) * NewBall.getPosition().y;
-	y = sin(angle * (std::_Pi / 180)) * NewBall.getPosition().x + cos(angle * (std::_Pi / 180)) * NewBall.getPosition().y;
-	direction = sf::Vector2f(x, y);
-	direction = MoveableObject::normalizeVector(direction);
 
+	do {
+		angle = uniform_distance(gen);
+		x = cos(angle * (std::_Pi / 180)) * NewBall.getPosition().x - sin(angle * (std::_Pi / 180)) * NewBall.getPosition().y;
+		y = sin(angle * (std::_Pi / 180)) * NewBall.getPosition().x + cos(angle * (std::_Pi / 180)) * NewBall.getPosition().y;
+		direction = sf::Vector2f(x, y);
+		direction = MoveableObject::normalizeVector(direction);
+		angle = MoveableObject::angleInDegree(direction);
+	} while ((angle > 45 && angle < 135) || (angle > 225 && angle < 315));
 	NewBall.setDirection(direction);
 }
 
@@ -183,11 +185,13 @@ void Game::updateBall()
 	if ((NewBall.getPosition().x + NewBall.getRadius()) <= 0)
 	{
 		//P2 scored
+		rightPaddle.setScore(rightPaddle.getScore() + 1);
 		defaultBallState();
 	}
 	if ((NewBall.getPosition().x - NewBall.getRadius()) >= wWidth)
 	{
 		//P1 scored
+		leftPaddle.setScore(leftPaddle.getScore() + 1);
 		defaultBallState();
 	}
 	sf::Vector2f movement;
@@ -226,4 +230,10 @@ void Game::updatePaddle()
 
 	rightPaddle.setDirection(0.f, 0.f);
 	leftPaddle.setDirection(0.f, 0.f);
+}
+
+void Game::updateScore()
+{
+	Score1.setString(std::to_string(leftPaddle.getScore()));
+	Score2.setString(std::to_string(rightPaddle.getScore()));
 }

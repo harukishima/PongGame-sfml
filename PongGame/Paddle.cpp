@@ -4,6 +4,16 @@ Paddle::Paddle()
 {
 }
 
+void Paddle::setScore(const int& score)
+{
+	mScore = score;
+}
+
+int Paddle::getScore()
+{
+	return mScore;
+}
+
 void Paddle::defaultPaddle()
 {
 	setSize(sf::Vector2f(2.f, 100.f));
@@ -32,7 +42,7 @@ bool Paddle::getDownState()
 	return isDown;
 }
 
-bool Paddle::operator==(const Paddle&p) const
-{
-	return ((mSpeed == p.mSpeed) && (mDirection == p.mDirection) && (getSize() == p.getSize()) && (getPosition().x == p.getPosition().x) && (getPosition().y == p.getPosition().y));
-}
+//bool Paddle::operator==(const Paddle&p) const
+//{
+//	return ((mSpeed == p.mSpeed) && (mDirection == p.mDirection) && (getSize() == p.getSize()) && (getPosition().x == p.getPosition().x) && (getPosition().y == p.getPosition().y));
+//}

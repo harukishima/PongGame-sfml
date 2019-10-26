@@ -28,7 +28,7 @@ private:
 	void checkPaddleCollision();
 	void updateBall();
 	void updatePaddle();
-	void updateScore(Paddle player);
+	void updateScore();
 	void gamePause();
 	void gameResume();
 
@@ -42,8 +42,9 @@ private:
 	bool isPlaying = false;
 	bool isSingle = false;
 	bool isMulti = false;
-	int score1, score2;
+	//int score1 = 0, score2 = 0;
 	sf::Text Score1, Score2;
+	sf::Font font;
 };
 
 

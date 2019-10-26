@@ -1,4 +1,6 @@
 #include "MoveableObject.h"
+#include <random>
+#include <cmath>
 
 MoveableObject::MoveableObject()
 {
@@ -46,6 +48,12 @@ double MoveableObject::vectorLength(const sf::Vector2f& a)
 double MoveableObject::dotProduct(const sf::Vector2f& a, const sf::Vector2f& b)
 {
 	return a.x * b.x + a.y * b.y;
+}
+
+double MoveableObject::angleInDegree(const sf::Vector2f& v)
+{
+	double angle = atan2(v.y, v.x) * 180 / std::_Pi;
+	return angle;
 }
 
 

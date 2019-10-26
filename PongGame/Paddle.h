@@ -9,9 +9,13 @@ class Paddle : public sf::RectangleShape, public MoveableObject
 private:
 	bool isUp = false;
 	bool isDown = false;
+	int mScore = 0;
 public:
 	Paddle();
 	virtual ~Paddle() = default;
+
+	void setScore(const int&);
+	int getScore();
 
 	void defaultPaddle();
 	void setUpState(bool state);
