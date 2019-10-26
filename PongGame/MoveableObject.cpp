@@ -42,3 +42,8 @@ double MoveableObject::vectorLength(const sf::Vector2f& a)
 {
 	return sqrt(pow(a.x,2)+pow(a.y,2));
 }
+
+double MoveableObject::dotProduct(const sf::Vector2f& a, const sf::Vector2f& b)
+{
+	return a.x * b.x + a.y * b.y;
+}

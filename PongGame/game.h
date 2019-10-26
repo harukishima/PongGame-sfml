@@ -3,6 +3,8 @@
 
 #include<SFML/Graphics.hpp>
 #include<ctime>
+#include<random>
+#include<cmath>
 #include"ball.h"
 #include"Paddle.h"
 

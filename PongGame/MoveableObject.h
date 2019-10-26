@@ -3,15 +3,15 @@
 
 #include<SFML\Graphics.hpp>
 
-const sf::Time TimePerFrame = sf::seconds(1.f / 144.f);
-const unsigned int wWidth = 800;
-const unsigned int wHeight = 600;
+const sf::Time TimePerFrame = sf::seconds(1.f / 144.f); //Thời gian của một frame
+const unsigned int wWidth = 800; //Chiều rộng cửa sổ
+const unsigned int wHeight = 600; //Chiều cao cửa sổ
 
 class MoveableObject
 {
 protected:
-	float mSpeed;
-	sf::Vector2f mDirection;
+	float mSpeed; //Tốc độ của vật
+	sf::Vector2f mDirection; //Vector hướng
 public:
 	MoveableObject();
 	virtual ~MoveableObject() = default;
@@ -20,8 +20,9 @@ public:
 	void setDirection(const sf::Vector2f&);
 	float getSpeed();
 	sf::Vector2f getDirection();
-	static sf::Vector2f normalizeVector(const sf::Vector2f&);
-	static double vectorLength(const sf::Vector2f&);
+	static sf::Vector2f normalizeVector(const sf::Vector2f&); //Đơn vị hoá vector
+	static double vectorLength(const sf::Vector2f&); //Tính chiều dài vector
+	static double dotProduct(const sf::Vector2f&, const sf::Vector2f&); //Tích vô hướng
 
 };
 

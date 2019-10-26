@@ -8,6 +8,7 @@ Game::Game()
 	defaultWall();
 	leftPaddle.defaultPaddle(); rightPaddle.defaultPaddle();
 	defaultPaddleState();
+	defaultBallState();
 	isPlaying = true;
 	isSingle = true;
 }
@@ -121,15 +122,18 @@ void Game::defaultBallState()
 {
 	NewBall.setSpeed(2);
 	NewBall.setPosition(sf::Vector2f(wWidth/2.f, wHeight/2.f));
-	srand((int)time(0));
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<int> uniform_distance(1, std::nextafter(360, DBL_MAX));
 	float angle;
-	do {
-		angle = rand() % 360 + 1;
-	} while ((angle > 45 && angle < 135) || (angle > 225 && angle < 315));
-	float x = cos(angle*(3.1415 / 180)) * NewBall.getPosition().x - sin(angle * (3.1415 / 180)) * NewBall.getPosition().y;
-	float y = sin(angle*(3.1415 / 180)) * NewBall.getPosition().x + cos(angle * (3.1415 / 180)) * NewBall.getPosition().y;
-	sf::Vector2f direction(x, y);
+	float x, y;
+	sf::Vector2f direction;
+	angle = uniform_distance(gen);
+	x = cos(angle * (std::_Pi / 180)) * NewBall.getPosition().x - sin(angle * (std::_Pi / 180)) * NewBall.getPosition().y;
+	y = sin(angle * (std::_Pi / 180)) * NewBall.getPosition().x + cos(angle * (std::_Pi / 180)) * NewBall.getPosition().y;
+	direction = sf::Vector2f(x, y);
 	direction = MoveableObject::normalizeVector(direction);
+
 	NewBall.setDirection(direction);
 }
 
