@@ -7,6 +7,8 @@
 #include<cmath>
 #include"ball.h"
 #include"Paddle.h"
+#include"MainMenu.h"
+#include"PauseMenu.h"
 
 
 class Game
@@ -28,6 +30,10 @@ private:
 	void checkPaddleCollision();
 	void updateBall();
 	void updatePaddle();
+	void updateScore();
+	void reset();
+	void gamePause();
+	void gameResume();
 
 	sf::RenderWindow mWindow;
 	Ball NewBall;
@@ -38,7 +44,12 @@ private:
 
 	bool isPlaying = false;
 	bool isSingle = false;
-	bool isMulti = false;
+	bool isMainMenu = true;
+	//int score1 = 0, score2 = 0;
+	sf::Text Score1, Score2;
+	sf::Font font;
+	MainMenu mainMenu;
+	PauseMenu pauseMenu;
 };
 
 

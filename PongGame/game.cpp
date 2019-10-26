@@ -9,8 +9,19 @@ Game::Game()
 	leftPaddle.defaultPaddle(); rightPaddle.defaultPaddle();
 	defaultPaddleState();
 	defaultBallState();
-	isPlaying = true;
-	isSingle = true;
+	/*isPlaying = true;
+	isSingle = true;*/
+	font.loadFromFile("sansation.ttf");
+	Score1.setFont(font);
+	Score1.setString("0");
+	Score1.setCharacterSize(20);
+	Score1.setPosition((mWindow.getSize().x) / 4, 20);
+	Score1.setFillColor(sf::Color::White);
+	Score2.setFont(font);
+	Score2.setString("0");
+	Score2.setCharacterSize(20);
+	Score2.setPosition(3*(mWindow.getSize().x) / 4, 20);
+	Score2.setFillColor(sf::Color::White);
 }
 
 void Game::run()
@@ -73,6 +84,71 @@ void Game::handleInput(sf::Keyboard::Key key, bool isPressed)
 	{
 		rightPaddle.setDownState(isPressed);
 	}
+	//Processed only when key is pressed
+	if (isPressed)
+	{
+		if (isMainMenu)
+		{
+			mainMenu.navigate(key);
+			//Exit game from main menu
+			if (key == sf::Keyboard::Escape)
+			{
+				mWindow.close();
+			}
+			//Start game in multiplayer mode
+			if (mainMenu.getRightState() && key == sf::Keyboard::Enter)
+			{
+				isMainMenu = false;
+				isSingle = false;
+				isPlaying = true;
+			}
+		}
+		
+		
+		//Pause game;
+		if (isPlaying && key == sf::Keyboard::Escape)
+		{
+			isPlaying = false;
+		}
+		//Pause menu input
+		if (!isPlaying && !isMainMenu)
+		{
+			/*if (pauseMenu.getState() != 3)
+			{
+				if (key == sf::Keyboard::Down)
+				{
+					pauseMenu.setState(pauseMenu.getState() + 1);
+				}
+			}
+			if (pauseMenu.getState() != 1)
+			{
+				if (key == sf::Keyboard::Up)
+				{
+					pauseMenu.setState(pauseMenu.getState() - 1);
+				}
+			}*/
+			pauseMenu.navigate(key);
+			if (key == sf::Keyboard::Enter)
+			{
+				switch (pauseMenu.getState())
+				{
+				case 1:
+					isPlaying = true;
+					break;
+				case 2:
+					isPlaying = false;
+					reset();
+					isMainMenu = true;
+					break;
+				case 3:
+					mWindow.close();
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
 }
 
 void Game::update(sf::Time TimePerFrame)
@@ -81,22 +157,54 @@ void Game::update(sf::Time TimePerFrame)
 	{
 		updateBall();
 		updatePaddle();
-		
+		updateScore();
 		/*
 		movement = sf::Vector2f(0, 0);
 		movement = rightPaddle.getDirection() * rightPaddle.getSpeed();
 		rightPaddle.move(movement);*/
 	}
+	else if (isMainMenu)
+	{
+		mainMenu.updateMenu();
+	}
+	else
+	{
+		pauseMenu.updateMenu();
+	}
+	
 }
 
 void Game::render()
 {
 	mWindow.clear();
-	mWindow.draw(leftPaddle);
-	mWindow.draw(rightPaddle);
-	mWindow.draw(NewBall);
-	mWindow.draw(upperWall);
-	mWindow.draw(lowerWall);
+	if (isPlaying)
+	{
+		mWindow.draw(leftPaddle);
+		mWindow.draw(rightPaddle);
+		mWindow.draw(NewBall);
+		mWindow.draw(upperWall);
+		mWindow.draw(lowerWall);
+		mWindow.draw(Score1);
+		mWindow.draw(Score2);
+	}
+	else if(isMainMenu)
+	{
+		mWindow.draw(mainMenu.title);
+		mWindow.draw(mainMenu.leftBox);
+		mWindow.draw(mainMenu.rightBox);
+		mWindow.draw(mainMenu.leftText);
+		mWindow.draw(mainMenu.rightText);
+	}
+	else
+	{
+		mWindow.draw(pauseMenu.title);
+		mWindow.draw(pauseMenu.upperBox);
+		mWindow.draw(pauseMenu.upperText);
+		mWindow.draw(pauseMenu.midleBox);
+		mWindow.draw(pauseMenu.midleText);
+		mWindow.draw(pauseMenu.bottomBox);
+		mWindow.draw(pauseMenu.bottomText);
+	}
 	mWindow.display();
 }
 
@@ -114,8 +222,9 @@ void Game::defaultWall()
 void Game::defaultPaddleState()
 {
 	leftPaddle.setPosition(sf::Vector2f(0.f,wHeight/2.f));
-	
+	leftPaddle.setScore(0);
 	rightPaddle.setPosition(sf::Vector2f(wWidth-rightPaddle.getSize().x,wHeight/2.f));
+	rightPaddle.setScore(0);
 }
 
 void Game::defaultBallState()
@@ -128,12 +237,15 @@ void Game::defaultBallState()
 	float angle;
 	float x, y;
 	sf::Vector2f direction;
-	angle = uniform_distance(gen);
-	x = cos(angle * (std::_Pi / 180)) * NewBall.getPosition().x - sin(angle * (std::_Pi / 180)) * NewBall.getPosition().y;
-	y = sin(angle * (std::_Pi / 180)) * NewBall.getPosition().x + cos(angle * (std::_Pi / 180)) * NewBall.getPosition().y;
-	direction = sf::Vector2f(x, y);
-	direction = MoveableObject::normalizeVector(direction);
 
+	do {
+		angle = uniform_distance(gen);
+		x = cos(angle * (std::_Pi / 180)) * NewBall.getPosition().x - sin(angle * (std::_Pi / 180)) * NewBall.getPosition().y;
+		y = sin(angle * (std::_Pi / 180)) * NewBall.getPosition().x + cos(angle * (std::_Pi / 180)) * NewBall.getPosition().y;
+		direction = sf::Vector2f(x, y);
+		direction = MoveableObject::normalizeVector(direction);
+		angle = MoveableObject::angleInDegree(direction);
+	} while ((angle > 45 && angle < 135) || (angle > 225 && angle < 315));
 	NewBall.setDirection(direction);
 }
 
@@ -169,11 +281,13 @@ void Game::updateBall()
 	if ((NewBall.getPosition().x + NewBall.getRadius()) <= 0)
 	{
 		//P2 scored
+		rightPaddle.setScore(rightPaddle.getScore() + 1);
 		defaultBallState();
 	}
 	if ((NewBall.getPosition().x - NewBall.getRadius()) >= wWidth)
 	{
 		//P1 scored
+		leftPaddle.setScore(leftPaddle.getScore() + 1);
 		defaultBallState();
 	}
 	sf::Vector2f movement;
@@ -212,4 +326,16 @@ void Game::updatePaddle()
 
 	rightPaddle.setDirection(0.f, 0.f);
 	leftPaddle.setDirection(0.f, 0.f);
+}
+
+void Game::updateScore()
+{
+	Score1.setString(std::to_string(leftPaddle.getScore()));
+	Score2.setString(std::to_string(rightPaddle.getScore()));
+}
+
+void Game::reset()
+{
+	defaultBallState();
+	defaultPaddleState();
 }
