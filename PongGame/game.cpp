@@ -11,6 +11,18 @@ Game::Game()
 	defaultBallState();
 	isPlaying = true;
 	isSingle = true;
+	sf::Font font;
+	font.loadFromFile("sansation.ttf");
+	Score1.setFont(font);
+	Score1.setString(std::to_string(score1));
+	Score1.setCharacterSize(20);
+	Score1.setPosition((mWindow.getSize().x) / 4, 20);
+	Score1.setFillColor(sf::Color::White);
+	Score2.setFont(font);
+	Score2.setString(std::to_string(score1));
+	Score2.setCharacterSize(20);
+	Score2.setPosition(3*(mWindow.getSize().x) / 4, 20);
+	Score2.setFillColor(sf::Color::White);
 }
 
 void Game::run()
@@ -97,6 +109,8 @@ void Game::render()
 	mWindow.draw(NewBall);
 	mWindow.draw(upperWall);
 	mWindow.draw(lowerWall);
+	mWindow.draw(Score1);
+	mWindow.draw(Score2);
 	mWindow.display();
 }
 

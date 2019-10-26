@@ -28,6 +28,9 @@ private:
 	void checkPaddleCollision();
 	void updateBall();
 	void updatePaddle();
+	void updateScore(Paddle player);
+	void gamePause();
+	void gameResume();
 
 	sf::RenderWindow mWindow;
 	Ball NewBall;
@@ -39,6 +42,8 @@ private:
 	bool isPlaying = false;
 	bool isSingle = false;
 	bool isMulti = false;
+	int score1, score2;
+	sf::Text Score1, Score2;
 };
 
 
