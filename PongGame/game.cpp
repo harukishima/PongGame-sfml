@@ -9,17 +9,19 @@ Game::Game()
 	leftPaddle.defaultPaddle(); rightPaddle.defaultPaddle();
 	defaultPaddleState();
 	defaultBallState();
+	middleLine.setSize(sf::Vector2f(1, wHeight));
+	middleLine.setPosition(sf::Vector2f(wWidth / 2.f, 0));
 	/*isPlaying = true;
 	isSingle = true;*/
-	font.loadFromFile("sansation.ttf");
+	font.loadFromFile("SUBWT___.ttf");
 	Score1.setFont(font);
 	Score1.setString("0");
-	Score1.setCharacterSize(20);
+	Score1.setCharacterSize(50);
 	Score1.setPosition((mWindow.getSize().x) / 4, 20);
 	Score1.setFillColor(sf::Color::White);
 	Score2.setFont(font);
 	Score2.setString("0");
-	Score2.setCharacterSize(20);
+	Score2.setCharacterSize(50);
 	Score2.setPosition(3*(mWindow.getSize().x) / 4, 20);
 	Score2.setFillColor(sf::Color::White);
 }
@@ -76,17 +78,35 @@ void Game::handleInput(sf::Keyboard::Key key, bool isPressed)
 	{
 		leftPaddle.setDownState(isPressed);
 	}
-	if (isPlaying && key == sf::Keyboard::Up)
+	if (!isSingle)
 	{
-		rightPaddle.setUpState(isPressed);
-	}
-	if (isPlaying && key == sf::Keyboard::Down)
-	{
-		rightPaddle.setDownState(isPressed);
+		if (isPlaying && key == sf::Keyboard::Up)
+		{
+			rightPaddle.setUpState(isPressed);
+		}
+		if (isPlaying && key == sf::Keyboard::Down)
+		{
+			rightPaddle.setDownState(isPressed);
+		}
 	}
 	//Processed only when key is pressed
 	if (isPressed)
 	{
+		if (isOver)
+		{
+			if (key == sf::Keyboard::Escape)
+			{
+				isMainMenu = true;
+				isOver = false;
+				reset();
+			}
+			if (key == sf::Keyboard::Enter)
+			{
+				isOver = false;
+				isPlaying = true;
+				reset();
+			}
+		}
 		if (isMainMenu)
 		{
 			mainMenu.navigate(key);
@@ -102,6 +122,14 @@ void Game::handleInput(sf::Keyboard::Key key, bool isPressed)
 				isSingle = false;
 				isPlaying = true;
 			}
+			//State game in single player mode
+			if (mainMenu.getLeftState() && key == sf::Keyboard::Enter)
+			{
+				isMainMenu = false;
+				isSingle = true;
+				isPlaying = true;
+				rightPaddle.setSpeed(2);
+			}
 		}
 		
 		
@@ -111,7 +139,7 @@ void Game::handleInput(sf::Keyboard::Key key, bool isPressed)
 			isPlaying = false;
 		}
 		//Pause menu input
-		if (!isPlaying && !isMainMenu)
+		if (!isPlaying && !isMainMenu && !isOver)
 		{
 			/*if (pauseMenu.getState() != 3)
 			{
@@ -155,9 +183,14 @@ void Game::update(sf::Time TimePerFrame)
 {
 	if (isPlaying)
 	{
+		if (isSingle == true)
+		{
+			processBot();
+		}
 		updateBall();
 		updatePaddle();
 		updateScore();
+		processWinning();
 		/*
 		movement = sf::Vector2f(0, 0);
 		movement = rightPaddle.getDirection() * rightPaddle.getSpeed();
@@ -166,6 +199,10 @@ void Game::update(sf::Time TimePerFrame)
 	else if (isMainMenu)
 	{
 		mainMenu.updateMenu();
+	}
+	else if (isOver)
+	{
+
 	}
 	else
 	{
@@ -179,6 +216,7 @@ void Game::render()
 	mWindow.clear();
 	if (isPlaying)
 	{
+		mWindow.draw(middleLine);
 		mWindow.draw(leftPaddle);
 		mWindow.draw(rightPaddle);
 		mWindow.draw(NewBall);
@@ -194,6 +232,14 @@ void Game::render()
 		mWindow.draw(mainMenu.rightBox);
 		mWindow.draw(mainMenu.leftText);
 		mWindow.draw(mainMenu.rightText);
+	}
+	else if (isOver)
+	{
+		mWindow.draw(over.guideMessage);
+		if (leftPaddle.getScore() >= 10)
+			mWindow.draw(over.P1Win);
+		else
+			mWindow.draw(over.P2Win);
 	}
 	else
 	{
@@ -223,8 +269,10 @@ void Game::defaultPaddleState()
 {
 	leftPaddle.setPosition(sf::Vector2f(0.f,wHeight/2.f));
 	leftPaddle.setScore(0);
+	leftPaddle.setSpeed(5);
 	rightPaddle.setPosition(sf::Vector2f(wWidth-rightPaddle.getSize().x,wHeight/2.f));
 	rightPaddle.setScore(0);
+	rightPaddle.setSpeed(5);
 }
 
 void Game::defaultBallState()
@@ -332,6 +380,38 @@ void Game::updateScore()
 {
 	Score1.setString(std::to_string(leftPaddle.getScore()));
 	Score2.setString(std::to_string(rightPaddle.getScore()));
+}
+
+void Game::processWinning()
+{
+	if (leftPaddle.getScore() >= 10 || rightPaddle.getScore() >= 10)
+	{
+		isPlaying = false;
+		isOver = true;
+		reset();
+	}
+}
+
+void Game::processBot()
+{
+	sf::Vector2f ballPosition(NewBall.getPosition());
+	sf::Vector2f botPosition(rightPaddle.getPosition());
+	float paddleLength = rightPaddle.getSize().y;
+	if (NewBall.getDirection().x > 0)
+	{
+		if (ballPosition.y < botPosition.y - paddleLength / 2 + paddleLength / 4)
+		{
+			rightPaddle.setDirection(sf::Vector2f(0, -1));
+		}
+		else if (ballPosition.y > botPosition.y + paddleLength / 2 - paddleLength / 4)
+		{
+			rightPaddle.setDirection(sf::Vector2f(0, 1));
+		}
+		else
+		{
+			rightPaddle.setDirection(sf::Vector2f(0, 0));
+		}
+	}
 }
 
 void Game::reset()

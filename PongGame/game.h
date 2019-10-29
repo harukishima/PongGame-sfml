@@ -9,6 +9,7 @@
 #include"Paddle.h"
 #include"MainMenu.h"
 #include"PauseMenu.h"
+#include"OverMessage.h"
 
 
 class Game
@@ -31,9 +32,9 @@ private:
 	void updateBall();
 	void updatePaddle();
 	void updateScore();
+	void processWinning();
+	void processBot();
 	void reset();
-	void gamePause();
-	void gameResume();
 
 	sf::RenderWindow mWindow;
 	Ball NewBall;
@@ -43,6 +44,7 @@ private:
 	Paddle rightPaddle;
 
 	bool isPlaying = false;
+	bool isOver = false;
 	bool isSingle = false;
 	bool isMainMenu = true;
 	//int score1 = 0, score2 = 0;
@@ -50,6 +52,8 @@ private:
 	sf::Font font;
 	MainMenu mainMenu;
 	PauseMenu pauseMenu;
+	OverMessage over;
+	sf::RectangleShape middleLine;
 };
 
 

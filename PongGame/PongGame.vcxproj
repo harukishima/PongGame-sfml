@@ -138,6 +138,7 @@
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="MoveableObject.cpp" />
+    <ClCompile Include="OverMessage.cpp" />
     <ClCompile Include="Paddle.cpp" />
     <ClCompile Include="PauseMenu.cpp" />
   </ItemGroup>
@@ -147,6 +148,7 @@
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="MoveableObject.h" />
+    <ClInclude Include="OverMessage.h" />
     <ClInclude Include="Paddle.h" />
     <ClInclude Include="PauseMenu.h" />
   </ItemGroup>
