@@ -3,7 +3,7 @@
 MainMenu::MainMenu()
 {
 	//Set title
-	titleFont.loadFromFile("sansation.ttf");
+	titleFont.loadFromFile("resource\\sansation.ttf");
 	title.setFont(titleFont);
 	title.setCharacterSize(50);
 	title.setString("Pong Game");

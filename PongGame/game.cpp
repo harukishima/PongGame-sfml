@@ -13,7 +13,7 @@ Game::Game()
 	middleLine.setPosition(sf::Vector2f(wWidth / 2.f, 0));
 	/*isPlaying = true;
 	isSingle = true;*/
-	font.loadFromFile("SUBWT___.ttf");
+	font.loadFromFile("resource\\SUBWT___.ttf");
 	Score1.setFont(font);
 	Score1.setString("0");
 	Score1.setCharacterSize(50);
@@ -141,20 +141,6 @@ void Game::handleInput(sf::Keyboard::Key key, bool isPressed)
 		//Pause menu input
 		if (!isPlaying && !isMainMenu && !isOver)
 		{
-			/*if (pauseMenu.getState() != 3)
-			{
-				if (key == sf::Keyboard::Down)
-				{
-					pauseMenu.setState(pauseMenu.getState() + 1);
-				}
-			}
-			if (pauseMenu.getState() != 1)
-			{
-				if (key == sf::Keyboard::Up)
-				{
-					pauseMenu.setState(pauseMenu.getState() - 1);
-				}
-			}*/
 			pauseMenu.navigate(key);
 			if (key == sf::Keyboard::Enter)
 			{
@@ -288,12 +274,12 @@ void Game::defaultBallState()
 
 	do {
 		angle = uniform_distance(gen);
-		x = cos(angle * (std::_Pi / 180)) * NewBall.getPosition().x - sin(angle * (std::_Pi / 180)) * NewBall.getPosition().y;
-		y = sin(angle * (std::_Pi / 180)) * NewBall.getPosition().x + cos(angle * (std::_Pi / 180)) * NewBall.getPosition().y;
-		direction = sf::Vector2f(x, y);
+		//x = cos(angle * (std::_Pi / 180)) * NewBall.getDirection().x - sin(angle * (std::_Pi / 180)) * NewBall.getDirection().y;
+		//y = sin(angle * (std::_Pi / 180)) * NewBall.getDirection().x + cos(angle * (std::_Pi / 180)) * NewBall.getDirection().y;
+		direction = MoveableObject::rolateVector(NewBall.getDirection(), angle);
 		direction = MoveableObject::normalizeVector(direction);
 		angle = MoveableObject::angleInDegree(direction);
-	} while ((angle > 45 && angle < 135) || (angle > 225 && angle < 315));
+	} while ((angle > 45 && angle < 135) || (angle < -45 && angle > -135));
 	NewBall.setDirection(direction);
 }
 
@@ -311,16 +297,54 @@ void Game::checkWallCollision()
 
 void Game::checkPaddleCollision()
 {
+	float angle;
+	float paddleDirection;
 	if ((NewBall.getPosition().x - NewBall.getRadius()) <= (leftPaddle.getPosition().x + leftPaddle.getSize().x) && NewBall.getPosition().y >= (leftPaddle.getPosition().y - leftPaddle.getSize().y/2.f) && NewBall.getPosition().y <= (leftPaddle.getPosition().y + leftPaddle.getSize().y/2.f))
 	{
 		NewBall.setDirection(-NewBall.getDirection().x, NewBall.getDirection().y);
 		NewBall.setSpeed(NewBall.getSpeed() + NewBall.getSpeed() * 0.1);
+		//paddleDirection = leftPaddle.getDirection().y;
+		////if (paddleDirection != 0)
+		//{
+		//	angle = MoveableObject::angleInDegree(NewBall.getDirection());
+		//	if (angle > 0)
+		//	{
+		//		if (paddleDirection > 0)
+		//		{
+		//			angle = 90 - angle;
+		//			angle /= 2;
+		//		}
+		//		else if (paddleDirection < 0)
+		//		{
+		//			angle /= 2;
+		//		}
+		//	}
+		//	else
+		//	{
+		//		if (paddleDirection < 0)
+		//		{
+		//			angle = -90 - angle;
+		//			angle /= 2;
+		//		}
+		//		else if (paddleDirection > 0)
+		//		{
+		//			angle /= 2;
+		//		}
+		//	}
+		//	if (paddleDirection != 0)
+		//	NewBall.setDirection(MoveableObject::rolateVector(NewBall.getDirection(), angle));
+		//}
 	}
 	if ((NewBall.getPosition().x + NewBall.getRadius()) >= rightPaddle.getPosition().x && NewBall.getPosition().y >= (rightPaddle.getPosition().y - rightPaddle.getSize().y / 2.f) && NewBall.getPosition().y <= (rightPaddle.getPosition().y + rightPaddle.getSize().y / 2.f))
 	{
 		NewBall.setDirection(-NewBall.getDirection().x, NewBall.getDirection().y);
 		NewBall.setSpeed(NewBall.getSpeed() + NewBall.getSpeed() * 0.1);
 	}
+}
+
+void Game::randomCollision()
+{
+	
 }
 
 void Game::updateBall()
@@ -368,12 +392,14 @@ void Game::updatePaddle()
 	rightMove = rightPaddle.getSpeed() * rightPaddle.getDirection();
 	leftMove = leftPaddle.getSpeed() * leftPaddle.getDirection();
 	
-		leftPaddle.move(leftMove);
+	leftPaddle.move(leftMove);
 	
-		rightPaddle.move(rightMove);
+	rightPaddle.move(rightMove);
 
-	rightPaddle.setDirection(0.f, 0.f);
+
 	leftPaddle.setDirection(0.f, 0.f);
+	rightPaddle.setDirection(0.f, 0.f);
+	
 }
 
 void Game::updateScore()
@@ -388,7 +414,6 @@ void Game::processWinning()
 	{
 		isPlaying = false;
 		isOver = true;
-		reset();
 	}
 }
 

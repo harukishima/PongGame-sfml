@@ -2,7 +2,7 @@
 
 OverMessage::OverMessage()
 {
-	font.loadFromFile("sansation.ttf");
+	font.loadFromFile("resource\\sansation.ttf");
 	P1Win.setFont(font);
 	P1Win.setCharacterSize(80);
 	P1Win.setString("P1 Win");

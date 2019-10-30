@@ -24,6 +24,7 @@ public:
 	static double vectorLength(const sf::Vector2f&); //Tính chiều dài vector
 	static double dotProduct(const sf::Vector2f&, const sf::Vector2f&); //Tích vô hướng
 	static double angleInDegree(const sf::Vector2f&); //Góc vector với trục hoành
+	static sf::Vector2f rolateVector(const sf::Vector2f&, float);
 
 };
 

@@ -3,7 +3,7 @@
 PauseMenu::PauseMenu()
 {
 	//Set title
-	titleFont.loadFromFile("sansation.ttf");
+	titleFont.loadFromFile("resource\\sansation.ttf");
 	title.setFont(titleFont);
 	title.setCharacterSize(80);
 	title.setString("PAUSE");

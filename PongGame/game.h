@@ -29,6 +29,7 @@ private:
 
 	void checkWallCollision();
 	void checkPaddleCollision();
+	void randomCollision();
 	void updateBall();
 	void updatePaddle();
 	void updateScore();

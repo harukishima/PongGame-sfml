@@ -56,4 +56,13 @@ double MoveableObject::angleInDegree(const sf::Vector2f& v)
 	return angle;
 }
 
+sf::Vector2f MoveableObject::rolateVector(const sf::Vector2f& source, float angle)
+{
+	sf::Vector2f a(source);
+	float x, y;
+	x = cos(angle * (std::_Pi / 180)) * a.x - sin(angle * (std::_Pi / 180)) * a.y;
+	y = sin(angle * (std::_Pi / 180)) * a.x + cos(angle * (std::_Pi / 180)) * a.y;
+	return sf::Vector2f(x, y);
+}
+
 
