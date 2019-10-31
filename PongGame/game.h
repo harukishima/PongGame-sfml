@@ -2,6 +2,7 @@
 #define __GAME_H__
 
 #include<SFML/Graphics.hpp>
+#include<SFML/Audio.hpp>
 #include<ctime>
 #include<random>
 #include<cmath>
@@ -55,6 +56,8 @@ private:
 	PauseMenu pauseMenu;
 	OverMessage over;
 	sf::RectangleShape middleLine;
+	sf::SoundBuffer buffer;
+	sf::Sound bounce; //Play sound when bounce with paddle
 };
 
 

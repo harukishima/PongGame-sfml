@@ -57,6 +57,7 @@ bool MainMenu::getRightState()
 
 void MainMenu::updateMenu()
 {
+	//Choose left button
 	if (isLeft)
 	{
 		leftBox.setFillColor(sf::Color::White);
@@ -67,7 +68,7 @@ void MainMenu::updateMenu()
 		leftBox.setFillColor(sf::Color::Transparent);
 		leftText.setFillColor(sf::Color::White);
 	}
-
+	//Choose right button
 	if (isRight)
 	{
 		rightBox.setFillColor(sf::Color::White);
@@ -79,6 +80,7 @@ void MainMenu::updateMenu()
 		rightText.setFillColor(sf::Color::White);
 	}
 }
+
 
 void MainMenu::navigate(sf::Keyboard::Key key)
 {

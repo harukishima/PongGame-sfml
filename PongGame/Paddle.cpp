@@ -17,7 +17,7 @@ int Paddle::getScore()
 void Paddle::defaultPaddle()
 {
 	setSize(sf::Vector2f(10.f, 100.f));
-	mSpeed = 5;
+	mSpeed = 3;
 	mDirection = sf::Vector2f(0, 0);
 	setOrigin(sf::Vector2f(0, getSize().y / 2));
 }

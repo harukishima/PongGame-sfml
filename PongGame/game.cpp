@@ -24,6 +24,8 @@ Game::Game()
 	Score2.setCharacterSize(50);
 	Score2.setPosition(3*(mWindow.getSize().x) / 4, 20);
 	Score2.setFillColor(sf::Color::White);
+	buffer.loadFromFile("resource\\bounce.wav");
+	bounce.setBuffer(buffer);
 }
 
 void Game::run()
@@ -128,7 +130,7 @@ void Game::handleInput(sf::Keyboard::Key key, bool isPressed)
 				isMainMenu = false;
 				isSingle = true;
 				isPlaying = true;
-				rightPaddle.setSpeed(2);
+				rightPaddle.setSpeed(2.5);
 			}
 		}
 		
@@ -199,7 +201,7 @@ void Game::update(sf::Time TimePerFrame)
 
 void Game::render()
 {
-	mWindow.clear();
+	mWindow.clear(sf::Color(235,128,39));
 	if (isPlaying)
 	{
 		mWindow.draw(middleLine);
@@ -213,6 +215,7 @@ void Game::render()
 	}
 	else if(isMainMenu)
 	{
+		//Draw main menu
 		mWindow.draw(mainMenu.title);
 		mWindow.draw(mainMenu.leftBox);
 		mWindow.draw(mainMenu.rightBox);
@@ -221,6 +224,7 @@ void Game::render()
 	}
 	else if (isOver)
 	{
+		//Draw over message
 		mWindow.draw(over.guideMessage);
 		if (leftPaddle.getScore() >= 10)
 			mWindow.draw(over.P1Win);
@@ -229,6 +233,7 @@ void Game::render()
 	}
 	else
 	{
+		//Draw pause menu
 		mWindow.draw(pauseMenu.title);
 		mWindow.draw(pauseMenu.upperBox);
 		mWindow.draw(pauseMenu.upperText);
@@ -239,6 +244,7 @@ void Game::render()
 	}
 	mWindow.display();
 }
+
 
 void Game::defaultWall()
 {
@@ -272,37 +278,56 @@ void Game::defaultBallState()
 	float x, y;
 	sf::Vector2f direction;
 
+	//Make ball move random when started
 	do {
 		angle = uniform_distance(gen);
-		//x = cos(angle * (std::_Pi / 180)) * NewBall.getDirection().x - sin(angle * (std::_Pi / 180)) * NewBall.getDirection().y;
-		//y = sin(angle * (std::_Pi / 180)) * NewBall.getDirection().x + cos(angle * (std::_Pi / 180)) * NewBall.getDirection().y;
 		direction = MoveableObject::rolateVector(NewBall.getDirection(), angle);
 		direction = MoveableObject::normalizeVector(direction);
 		angle = MoveableObject::angleInDegree(direction);
+		//Ensure ball angle not too vertical
 	} while ((angle > 45 && angle < 135) || (angle < -45 && angle > -135));
 	NewBall.setDirection(direction);
 }
 
 void Game::checkWallCollision()
 {
+	//Bounce with upper wall
 	if ((NewBall.getPosition().y - NewBall.getRadius()) <= upperWall.getSize().y)
 	{
 		NewBall.setDirection(NewBall.getDirection().x, -NewBall.getDirection().y);
 	}
+	//Bounce with lower wall
 	if ((NewBall.getPosition().y + NewBall.getRadius()) >= (wHeight - lowerWall.getSize().y))
 	{
 		NewBall.setDirection(NewBall.getDirection().x, -NewBall.getDirection().y);
 	}
+	//if ((NewBall.getPosition().x > ))
 }
 
 void Game::checkPaddleCollision()
 {
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<int> uniform_distance(1, std::nextafter(20, DBL_MAX));
 	float angle;
-	float paddleDirection;
+	sf::Vector2f ballDirection;
+	//Bounce with left paddle
 	if ((NewBall.getPosition().x - NewBall.getRadius()) <= (leftPaddle.getPosition().x + leftPaddle.getSize().x) && NewBall.getPosition().y >= (leftPaddle.getPosition().y - leftPaddle.getSize().y/2.f) && NewBall.getPosition().y <= (leftPaddle.getPosition().y + leftPaddle.getSize().y/2.f))
 	{
 		NewBall.setDirection(-NewBall.getDirection().x, NewBall.getDirection().y);
+		angle = uniform_distance(rd);
+		ballDirection = NewBall.getDirection();
+		if (NewBall.getPosition().y > leftPaddle.getPosition().y)
+		{
+			ballDirection = MoveableObject::rolateVector(ballDirection, angle);
+		}
+		else
+		{
+			ballDirection = MoveableObject::rolateVector(ballDirection, -angle);
+		}
+		NewBall.setDirection(ballDirection);
 		NewBall.setSpeed(NewBall.getSpeed() + NewBall.getSpeed() * 0.1);
+		bounce.play();
 		//paddleDirection = leftPaddle.getDirection().y;
 		////if (paddleDirection != 0)
 		//{
@@ -335,16 +360,44 @@ void Game::checkPaddleCollision()
 		//	NewBall.setDirection(MoveableObject::rolateVector(NewBall.getDirection(), angle));
 		//}
 	}
+	else if (NewBall.getPosition().x < (leftPaddle.getPosition().x + leftPaddle.getSize().x) && std::abs(NewBall.getPosition().y - leftPaddle.getPosition().y) < std::abs(NewBall.getRadius() + leftPaddle.getSize().y / 2.f))
+	{
+		NewBall.setDirection(-NewBall.getDirection().x, -NewBall.getDirection().y);
+		NewBall.setSpeed(NewBall.getSpeed() + NewBall.getSpeed() * 0.1);
+		bounce.play();
+	}
+	//Bounce with right paddle
 	if ((NewBall.getPosition().x + NewBall.getRadius()) >= rightPaddle.getPosition().x && NewBall.getPosition().y >= (rightPaddle.getPosition().y - rightPaddle.getSize().y / 2.f) && NewBall.getPosition().y <= (rightPaddle.getPosition().y + rightPaddle.getSize().y / 2.f))
 	{
 		NewBall.setDirection(-NewBall.getDirection().x, NewBall.getDirection().y);
+		angle = uniform_distance(rd);
+		ballDirection = NewBall.getDirection();
+		if (NewBall.getPosition().y > rightPaddle.getPosition().y)
+		{
+			ballDirection = MoveableObject::rolateVector(ballDirection, -angle);
+		}
+		else
+		{
+			ballDirection = MoveableObject::rolateVector(ballDirection, angle);
+		}
+		NewBall.setDirection(ballDirection);
+
 		NewBall.setSpeed(NewBall.getSpeed() + NewBall.getSpeed() * 0.1);
+		bounce.play();
+	}
+	else if (NewBall.getPosition().x > rightPaddle.getPosition().x && std::abs(NewBall.getPosition().y - rightPaddle.getPosition().y) < std::abs(NewBall.getRadius() + rightPaddle.getSize().y / 2.f))
+	{
+		NewBall.setDirection(-NewBall.getDirection().x, -NewBall.getDirection().y);
+		NewBall.setSpeed(NewBall.getSpeed() + NewBall.getSpeed() * 0.1);
+		bounce.play();
 	}
 }
 
 void Game::randomCollision()
 {
 	
+	
+
 }
 
 void Game::updateBall()
@@ -372,6 +425,7 @@ void Game::updatePaddle()
 	checkPaddleCollision();
 	sf::Vector2f leftMove(0, 0);
 	sf::Vector2f rightMove(0, 0);
+	//Move left paddle
 	if (isPlaying && leftPaddle.getUpState() && (leftPaddle.getPosition().y - leftPaddle.getSize().y / 2.f) >= upperWall.getSize().y)
 	{
 		leftPaddle.setDirection(0.f,-1.f);
@@ -381,6 +435,7 @@ void Game::updatePaddle()
 		leftPaddle.setDirection(0.f, 1.f);
 	}
 	leftMove = leftPaddle.getSpeed() * leftPaddle.getDirection();
+	//Move right paddle
 	if (isPlaying && rightPaddle.getUpState() && (rightPaddle.getPosition().y - rightPaddle.getSize().y / 2.f) >= upperWall.getSize().y)
 	{
 		rightPaddle.setDirection(0.f, -1.f);
@@ -410,6 +465,7 @@ void Game::updateScore()
 
 void Game::processWinning()
 {
+	//Game over when one player scores 10 point first
 	if (leftPaddle.getScore() >= 10 || rightPaddle.getScore() >= 10)
 	{
 		isPlaying = false;
@@ -422,6 +478,7 @@ void Game::processBot()
 	sf::Vector2f ballPosition(NewBall.getPosition());
 	sf::Vector2f botPosition(rightPaddle.getPosition());
 	float paddleLength = rightPaddle.getSize().y;
+	//Move bot
 	if (NewBall.getDirection().x > 0)
 	{
 		if (ballPosition.y < botPosition.y - paddleLength / 2 + paddleLength / 4)
@@ -441,6 +498,7 @@ void Game::processBot()
 
 void Game::reset()
 {
+	//Reset ball and paddle to default
 	defaultBallState();
 	defaultPaddleState();
 }

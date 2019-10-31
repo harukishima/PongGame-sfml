@@ -7,9 +7,9 @@
 class Paddle : public sf::RectangleShape, public MoveableObject
 {
 private:
-	bool isUp = false;
-	bool isDown = false;
-	int mScore = 0;
+	bool isUp = false; //true: paddle move up
+	bool isDown = false; //true: paddle move down
+	int mScore = 0; //Player's score
 public:
 	Paddle();
 	virtual ~Paddle() = default;

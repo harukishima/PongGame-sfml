@@ -23,8 +23,8 @@ public:
 	static sf::Vector2f normalizeVector(const sf::Vector2f&); //Đơn vị hoá vector
 	static double vectorLength(const sf::Vector2f&); //Tính chiều dài vector
 	static double dotProduct(const sf::Vector2f&, const sf::Vector2f&); //Tích vô hướng
-	static double angleInDegree(const sf::Vector2f&); //Góc vector với trục hoành
-	static sf::Vector2f rolateVector(const sf::Vector2f&, float);
+	static double angleInDegree(const sf::Vector2f&); //Góc vector với trục hoành (chú ý: góc ngược xuống dưới)
+	static sf::Vector2f rolateVector(const sf::Vector2f&, float); //Xoay vector một góc cho trước ngược chiều kim đồng hồ
 
 };
 

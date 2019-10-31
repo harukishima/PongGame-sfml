@@ -7,7 +7,7 @@
 
 
 
-const float dBallSpeed = 50;
+
 
 class Ball : public sf::CircleShape, public MoveableObject
 {
