@@ -130,7 +130,7 @@ void Game::handleInput(sf::Keyboard::Key key, bool isPressed)
 				isMainMenu = false;
 				isSingle = true;
 				isPlaying = true;
-				rightPaddle.setSpeed(2.5);
+				rightPaddle.setSpeed(3);
 			}
 		}
 		
@@ -309,24 +309,29 @@ void Game::checkPaddleCollision()
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_int_distribution<int> uniform_distance(1, std::nextafter(20, DBL_MAX));
+	float rolate;
 	float angle;
 	sf::Vector2f ballDirection;
 	//Bounce with left paddle
 	if ((NewBall.getPosition().x - NewBall.getRadius()) <= (leftPaddle.getPosition().x + leftPaddle.getSize().x) && NewBall.getPosition().y >= (leftPaddle.getPosition().y - leftPaddle.getSize().y/2.f) && NewBall.getPosition().y <= (leftPaddle.getPosition().y + leftPaddle.getSize().y/2.f))
 	{
 		NewBall.setDirection(-NewBall.getDirection().x, NewBall.getDirection().y);
-		angle = uniform_distance(rd);
+		rolate = uniform_distance(rd);
 		ballDirection = NewBall.getDirection();
+		angle = MoveableObject::angleInDegree(ballDirection);
 		if (NewBall.getPosition().y > leftPaddle.getPosition().y)
 		{
-			ballDirection = MoveableObject::rolateVector(ballDirection, angle);
+			if (angle < 60)
+				ballDirection = MoveableObject::rolateVector(ballDirection, rolate);
 		}
 		else
 		{
-			ballDirection = MoveableObject::rolateVector(ballDirection, -angle);
+			if (angle > -60)
+				ballDirection = MoveableObject::rolateVector(ballDirection, -rolate);
 		}
 		NewBall.setDirection(ballDirection);
 		NewBall.setSpeed(NewBall.getSpeed() + NewBall.getSpeed() * 0.1);
+		NewBall.setPosition(sf::Vector2f(NewBall.getRadius() + leftPaddle.getSize().x, NewBall.getPosition().y));
 		bounce.play();
 		//paddleDirection = leftPaddle.getDirection().y;
 		////if (paddleDirection != 0)
@@ -364,31 +369,36 @@ void Game::checkPaddleCollision()
 	{
 		NewBall.setDirection(-NewBall.getDirection().x, -NewBall.getDirection().y);
 		NewBall.setSpeed(NewBall.getSpeed() + NewBall.getSpeed() * 0.1);
+		NewBall.setPosition(sf::Vector2f(NewBall.getRadius() + leftPaddle.getSize().x, NewBall.getPosition().y)); 
 		bounce.play();
 	}
 	//Bounce with right paddle
 	if ((NewBall.getPosition().x + NewBall.getRadius()) >= rightPaddle.getPosition().x && NewBall.getPosition().y >= (rightPaddle.getPosition().y - rightPaddle.getSize().y / 2.f) && NewBall.getPosition().y <= (rightPaddle.getPosition().y + rightPaddle.getSize().y / 2.f))
 	{
 		NewBall.setDirection(-NewBall.getDirection().x, NewBall.getDirection().y);
-		angle = uniform_distance(rd);
+		rolate = uniform_distance(rd);
 		ballDirection = NewBall.getDirection();
+		angle = MoveableObject::angleInDegree(ballDirection);
 		if (NewBall.getPosition().y > rightPaddle.getPosition().y)
 		{
-			ballDirection = MoveableObject::rolateVector(ballDirection, -angle);
+			if (angle > 120)
+				ballDirection = MoveableObject::rolateVector(ballDirection, -rolate);
 		}
 		else
 		{
-			ballDirection = MoveableObject::rolateVector(ballDirection, angle);
+			if (angle < -120)
+			ballDirection = MoveableObject::rolateVector(ballDirection, rolate);
 		}
 		NewBall.setDirection(ballDirection);
-
 		NewBall.setSpeed(NewBall.getSpeed() + NewBall.getSpeed() * 0.1);
+		NewBall.setPosition(sf::Vector2f(wWidth - rightPaddle.getSize().x - NewBall.getRadius(), NewBall.getPosition().y));
 		bounce.play();
 	}
 	else if (NewBall.getPosition().x > rightPaddle.getPosition().x && std::abs(NewBall.getPosition().y - rightPaddle.getPosition().y) < std::abs(NewBall.getRadius() + rightPaddle.getSize().y / 2.f))
 	{
 		NewBall.setDirection(-NewBall.getDirection().x, -NewBall.getDirection().y);
 		NewBall.setSpeed(NewBall.getSpeed() + NewBall.getSpeed() * 0.1);
+		NewBall.setPosition(sf::Vector2f(wWidth - rightPaddle.getSize().x - NewBall.getRadius(), NewBall.getPosition().y));
 		bounce.play();
 	}
 }
