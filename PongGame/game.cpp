@@ -123,6 +123,7 @@ void Game::handleInput(sf::Keyboard::Key key, bool isPressed)
 				isMainMenu = false;
 				isSingle = false;
 				isPlaying = true;
+				defaultBallState();
 			}
 			//State game in single player mode
 			if (mainMenu.getLeftState() && key == sf::Keyboard::Enter)
@@ -130,7 +131,8 @@ void Game::handleInput(sf::Keyboard::Key key, bool isPressed)
 				isMainMenu = false;
 				isSingle = true;
 				isPlaying = true;
-				rightPaddle.setSpeed(3);
+				defaultPaddleState();
+				//rightPaddle.setSpeed(3);
 			}
 		}
 		
@@ -201,9 +203,11 @@ void Game::update(sf::Time TimePerFrame)
 
 void Game::render()
 {
+	//Set background's color
 	mWindow.clear(sf::Color(235,128,39));
 	if (isPlaying)
 	{
+		//Draw game
 		mWindow.draw(middleLine);
 		mWindow.draw(leftPaddle);
 		mWindow.draw(rightPaddle);
@@ -264,7 +268,10 @@ void Game::defaultPaddleState()
 	leftPaddle.setSpeed(5);
 	rightPaddle.setPosition(sf::Vector2f(wWidth-rightPaddle.getSize().x,wHeight/2.f));
 	rightPaddle.setScore(0);
-	rightPaddle.setSpeed(5);
+	if (isSingle)
+		rightPaddle.setSpeed(3);
+	else
+		rightPaddle.setSpeed(5);
 }
 
 void Game::defaultBallState()

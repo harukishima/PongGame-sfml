@@ -41,8 +41,3 @@ bool Paddle::getDownState()
 {
 	return isDown;
 }
-
-//bool Paddle::operator==(const Paddle&p) const
-//{
-//	return ((mSpeed == p.mSpeed) && (mDirection == p.mDirection) && (getSize() == p.getSize()) && (getPosition().x == p.getPosition().x) && (getPosition().y == p.getPosition().y));
-//}
