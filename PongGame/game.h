@@ -21,16 +21,17 @@ public:
 	
 private:
 	void processEvents();
-	void handleInput(sf::Keyboard::Key key, bool isPressed);
-	void update(sf::Time);
-	void render();
+	void handleInput(sf::Keyboard::Key key, bool isPressed); 
+	void update(sf::Time); //Change object
+	void render(); //Draw object
+	//Default value
 	void defaultWall();
 	void defaultPaddleState();
 	void defaultBallState();
 
-	void checkWallCollision();
+	void checkWallCollision(); 
 	void checkPaddleCollision();
-	void randomCollision();
+	void randomCollision(); //Nothing here
 	void updateBall();
 	void updatePaddle();
 	void updateScore();
@@ -49,7 +50,6 @@ private:
 	bool isOver = false;
 	bool isSingle = false;
 	bool isMainMenu = true;
-	//int score1 = 0, score2 = 0;
 	sf::Text Score1, Score2;
 	sf::Font font;
 	MainMenu mainMenu;

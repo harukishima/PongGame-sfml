@@ -278,6 +278,7 @@ void Game::defaultBallState()
 {
 	NewBall.setSpeed(2);
 	NewBall.setPosition(sf::Vector2f(wWidth/2.f, wHeight/2.f));
+	//Random element
 	std::random_device rd;
 	std::mt19937 gen(rd());
 	std::uniform_int_distribution<int> uniform_distance(1, std::nextafter(360, DBL_MAX));
@@ -326,6 +327,7 @@ void Game::checkPaddleCollision()
 		rolate = uniform_distance(rd);
 		ballDirection = NewBall.getDirection();
 		angle = MoveableObject::angleInDegree(ballDirection);
+		//Limit ball angle
 		if (NewBall.getPosition().y > leftPaddle.getPosition().y)
 		{
 			if (angle < 60)
@@ -386,6 +388,7 @@ void Game::checkPaddleCollision()
 		rolate = uniform_distance(rd);
 		ballDirection = NewBall.getDirection();
 		angle = MoveableObject::angleInDegree(ballDirection);
+		//Limit ball angle
 		if (NewBall.getPosition().y > rightPaddle.getPosition().y)
 		{
 			if (angle > 120)
@@ -468,7 +471,7 @@ void Game::updatePaddle()
 	
 	rightPaddle.move(rightMove);
 
-
+	//Reset paddle direction
 	leftPaddle.setDirection(0.f, 0.f);
 	rightPaddle.setDirection(0.f, 0.f);
 	
